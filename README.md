@@ -4,9 +4,13 @@ Fork from Montesuma80/3cx-web-API with updates for use with 3CX v20 Update 2.
 This is untested and I cannot guarantee it will work or be secure.  
  Use at your own risk and strictly limit access to the API.
 
-I want to thank Montesuma80 for his work on this project and feel free to reach out to include my changes upstream. 
 
 #### Supportet by v20 Update 2
+=======
+@All please send me an mail to **hoening`at`googlemail.com
+
+------------
+
 
 ------------
 
