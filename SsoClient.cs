@@ -31,7 +31,7 @@ namespace WebAPI
             HttpResponseMessage response;
             try
             {
-                response = await _httpClient.PostAsync("/internal", requestContent);
+                response = await _httpClient.PostAsync("/auth", requestContent);
                 response.EnsureSuccessStatusCode();
             }
             catch (HttpRequestException e)
