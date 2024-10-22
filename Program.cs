@@ -68,7 +68,7 @@ namespace WebAPI {
         ProgramOptions options = ParseArguments(args);
         
         var prefixes = new List <string> () {
-          $"http://localhost:{options.Port}/"
+          $"http://127.0.0.1:{options.Port}/"
         };
         if (options.DebugMode) {
           Program.Debugger = "debug";
