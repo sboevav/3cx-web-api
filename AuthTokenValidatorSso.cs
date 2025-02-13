@@ -11,9 +11,9 @@ namespace WebAPI
     {
         private readonly SsoClient ssoClient;
 
-        public AuthTokenValidatorSso(String ssoUri)
+        public AuthTokenValidatorSso(String ssoUrl)
         {
-            ssoClient = new SsoClient(ssoUri);
+            ssoClient = new SsoClient(ssoUrl);
         }
 
         public async Task<bool> Validate(string token)

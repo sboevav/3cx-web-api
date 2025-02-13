@@ -10,9 +10,9 @@ namespace WebAPI
     {
         private readonly HttpClient _httpClient;
 
-        public SsoClient(String ssoUri)
+        public SsoClient(String ssoUrl)
         {
-            _httpClient = new HttpClient { BaseAddress = new Uri(ssoUri) };
+            _httpClient = new HttpClient { BaseAddress = new Uri(ssoUrl) };
         }
 
         public async Task<ApiResponse> GetPublicKeyAsync(Guid keyId)
