@@ -1,13 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using TCX.Configuration;
-using TCX.PBXAPI;
-using System.Threading;
+using System.Diagnostics;
 using System.IO;
-using System.Reflection;
-using System.Linq;
-using System.Net;
+using System.Text;
 
 namespace WebAPI
 {
@@ -18,7 +12,7 @@ public static class Logger
     {
         Console.WriteLine(str);
         LogString.Append(str).Append(Environment.NewLine);
-        if (Program.Debugger == "debug")
+        if (Debugger.IsAttached)
             {
                 addtext(str);
             }
@@ -28,7 +22,7 @@ public static class Logger
     {
         Console.Write(str);
         LogString.Append(str);
-        if (Program.Debugger == "debug")
+        if (Debugger.IsAttached)
             {
                 addtext(str);
             }
