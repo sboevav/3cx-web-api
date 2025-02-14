@@ -22,6 +22,16 @@ public class Startup
     {
         services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
+        services.AddCors(options =>
+        {
+            options.AddPolicy("CustomCorsPolicy", builder =>
+            {
+                builder.AllowAnyOrigin() 
+                    .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") 
+                    .WithHeaders("Content-Type", "Authorization", "Content-Length", "X-Requested-With", "x-request-id"); 
+            });
+        });
+
         var configurationFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "3CXPhoneSystem.ini");
         var configurationService = new ConfigurationService(configurationFilePath);
         services.AddSingleton(configurationService);
@@ -33,6 +43,7 @@ public class Startup
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         app.UseRouting();
+        app.UseCors("CustomCorsPolicy");
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
