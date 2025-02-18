@@ -11,7 +11,7 @@ using System.Net;
 
 namespace WebAPI
 {
-    public class update
+    public class Update
     {
         public static string updateid(string args1, string args2) // args1: Extension number - args2: New Outbound Caller Id
         {

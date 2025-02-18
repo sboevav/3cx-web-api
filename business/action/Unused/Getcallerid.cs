@@ -11,7 +11,7 @@ using System.Net;
 
 namespace WebAPI
 {
-    public class getcallqueuenumber
+    public class Getcallqueuenumber
     {
         public static string showid(string args1)
         {       

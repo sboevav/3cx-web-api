@@ -11,7 +11,7 @@ using System.Net;
 
 namespace WebAPI
 {
-    public class answer
+    public class Answer
     {
         public static string call(string args1)
         {       

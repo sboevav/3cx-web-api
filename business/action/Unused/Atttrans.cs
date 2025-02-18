@@ -11,7 +11,7 @@ using System.Net;
 
 namespace WebAPI
 {
-    public class atttrans
+    public class Atttrans
     {
         public static string dotrans(string args1)
         { 

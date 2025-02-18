@@ -11,7 +11,7 @@ using System.Net;
 
 namespace WebAPI
 {
-    public class park
+    public class Park
     {
         public static string call(string args1)
         { 
