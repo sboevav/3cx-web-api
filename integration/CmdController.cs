@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.business;
 
@@ -15,6 +16,7 @@ namespace WebAPI.integration
         }
 
         [HttpPost("makecall/{from}/{to}/{callerId}")]
+        [Authorize]
         public IActionResult MakeCall(string from, string to, string callerId)
         {
             var result = _pbxService.MakeCall(from, to, callerId);
@@ -22,6 +24,7 @@ namespace WebAPI.integration
         }
 
         [HttpGet("showallcalls")]
+        [Authorize]
         public IActionResult ShowAllCalls()
         {
             var result = _pbxService.ShowAllCalls();
