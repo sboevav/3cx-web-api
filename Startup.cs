@@ -2,16 +2,12 @@ using WebAPI.business;
 using WebAPI.config;
 using WebAPI.auth;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.IO;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
-using Microsoft.IdentityModel.Tokens;
 
 namespace WebAPI;
 
@@ -35,55 +31,8 @@ public class Startup
         });
 
         services.AddSingleton<SsoClient>();
-        services.AddSingleton<PublicKeyCache>();
-
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options => 
-                    {
-                        options.Events = new JwtBearerEvents
-                        {
-                            OnMessageReceived = context =>
-                            {
-                                Console.WriteLine($"Token received: {context.Token} on path {context.HttpContext.Request.Path}");
-                                return Task.CompletedTask;
-                            },
-                            OnAuthenticationFailed = context =>
-                            {
-                                Console.WriteLine($"Authentication failed: {context.Exception.Message}");
-                                return Task.CompletedTask;
-                            },
-                            OnTokenValidated = context =>
-                            {
-                                Console.WriteLine($"Token validated for user: {context.Principal.Identity.Name}");
-                                return Task.CompletedTask;
-                            },
-                            OnChallenge = context =>
-                            {
-                                Console.WriteLine($"OnChallenge: {context.Error}, {context.ErrorDescription}");
-                                return Task.CompletedTask;
-                            }
-                        };
-
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuer = true,
-                            ValidateAudience = false,
-                            ValidateLifetime = true,
-                            ValidateIssuerSigningKey = true,
-                            ValidIssuer = "ch.sncag.sso",
-                            IssuerSigningKeyResolver = (token, securityToken, kid, parameters) =>
-                            {
-                                var keyId = Guid.Parse(kid);
-                                var rsaParametersTask = _publicKeyCache.GetPublicKeyAsync(keyId);
-                                rsaParametersTask.Wait(); // Wait на результ
-                                var rsaParameters = rsaParametersTask.Result;
-                                return new[] { new RsaSecurityKey(rsaParameters) };
-                            }
-                        };
-                    }
-                );
-       
-        services.AddSingleton<IConfigureOptions<JwtBearerOptions>, JwtBearerOptionsSetup>();
+        services.AddSingleton<AuthTokenValidatorSso>();
+        services.AddControllers();
 
         services.AddCors(options =>
         {
@@ -99,7 +48,7 @@ public class Startup
         var configurationService = new ConfigurationService(configurationFilePath);
         services.AddSingleton(configurationService);
         services.AddSingleton<PbxService>();
-        services.AddControllers();
+        
         services.AddLogging(builder =>
         {
             builder.AddConsole();
@@ -111,9 +60,8 @@ public class Startup
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         app.UseRouting();
+        app.UseMiddleware<TokenValidationMiddleware>();
         app.UseCors("CustomCorsPolicy");
-        app.UseAuthentication();
-        app.UseAuthorization();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
