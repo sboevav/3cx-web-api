@@ -11,7 +11,7 @@ using System.Net;
 
 namespace WebAPI
 {
-    public class Getdnregs
+    public class getdnregs
     {
         public static string status(string args1)
         {       

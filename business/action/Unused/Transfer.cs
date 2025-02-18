@@ -11,7 +11,7 @@ using System.Net;
 
 namespace WebAPI
 {
-    public class Transfercall
+    public class transfercall
     {
         public static string cold(string args1, string args2)
         { 

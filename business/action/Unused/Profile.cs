@@ -11,7 +11,7 @@ using System.Net;
 
 namespace WebAPI
 {
-    public class Profiles
+    public class profiles
     {
         public static string show(string args1)
         { 

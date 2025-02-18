@@ -11,7 +11,7 @@ using System.Net;
 
 namespace WebAPI
 {
-    public class Queuecontroll
+    public class queuecontroll
     {
         public static string status(string args1, string args2)
         {   

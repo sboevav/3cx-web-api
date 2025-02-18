@@ -12,7 +12,7 @@ using System.Net.Sockets;
 
 namespace WebAPI
 {
-    public class Getlocalip
+    public class getlocalip
     {
     public static string localIPAddress()
         {

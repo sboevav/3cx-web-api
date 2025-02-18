@@ -9,16 +9,16 @@ using System.Reflection;
 using System.Linq;
 using System.Net;
 
-namespace WebAPI
+namespace WebAPI.business
 {
-    public class makedirectcall
+    public class MakeDirectCall
     {
 
         //Arg1 = Extension
         //Arg2 = Destination
         //Arg3 = Phoneart (Soft /desktop)
         //if one of them is empty, send error Back 
-        public static string dial(string args1,string args2,string args3)
+        public static string Dial(string args1,string args2,string args3)
         {       
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("From Extension: " + args1);
@@ -47,7 +47,7 @@ namespace WebAPI
                                                     // Construct a response.
                                                     //respone the CallID
                                                     Thread.Sleep(2500);
-                                                    string callid =  getcallid.showcallid(args1);
+                                                    string callid =  GetCallId.ShowCallId(args1);
                                                     return (callid);
                                                 }
                                                 else if (result.Contains("3CX") && args3 == "Web")
@@ -59,7 +59,7 @@ namespace WebAPI
                                                     //listener2.SetTypeHandler(null, (x) => ev.Set(), null, (x) => x["devcontact"].Equals(registrarRecord.Contact), (x) => ev.WaitOne(x));
                                                     PhoneSystem.Root.MakeCall(registrarRecord, args2);
                                                     Thread.Sleep(2500);
-                                                    string callid =  getcallid.showcallid(args1);
+                                                    string callid =  GetCallId.ShowCallId(args1);
                                                     return (callid);
                                                 }
                                                 else if (!result.Contains("3CX") && args3 == "Desktop")
@@ -71,7 +71,7 @@ namespace WebAPI
                                                     //listener2.SetTypeHandler(null, (x) => ev.Set(), null, (x) => x["devcontact"].Equals(registrarRecord.Contact), (x) => ev.WaitOne(x));
                                                     PhoneSystem.Root.MakeCall(registrarRecord, args2);
                                                     Thread.Sleep(2500);
-                                                    string callid =  getcallid.showcallid(args1);
+                                                    string callid =  GetCallId.ShowCallId(args1);
                                                     return (callid);
                                                 }
                                                 else 

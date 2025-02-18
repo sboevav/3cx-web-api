@@ -31,12 +31,12 @@ public class PbxService
 
     public string MakeCall(string from, string to, string callerId)
     {
-        return makedirectcall.dial(from, to, callerId);
+        return MakeDirectCall.Dial(from, to, callerId);
     }
 
     public string ShowAllCalls()
     {
-        return getcall.showallcall();
+        return Getcall.showallcall();
     }
 
 }

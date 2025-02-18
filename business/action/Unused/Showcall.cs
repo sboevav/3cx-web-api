@@ -11,7 +11,7 @@ using System.Net;
 
 namespace WebAPI
 {
-    public class getcall
+    public class Getcall
     {
         public static string showallcall()
         { 
