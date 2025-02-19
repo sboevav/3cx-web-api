@@ -2,17 +2,19 @@ using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace WebAPI
+namespace WebAPI.auth
 {
     public class SsoClient
     {
         private readonly HttpClient _httpClient;
 
-        public SsoClient(String ssoUrl)
+        public SsoClient(HttpClient httpClient, IConfiguration configuration)
         {
-            _httpClient = new HttpClient { BaseAddress = new Uri(ssoUrl) };
+            _httpClient = httpClient;
+            _httpClient.BaseAddress = new Uri(configuration["AppSettings:SsoUrl"]);
         }
 
         public async Task<ApiResponse> GetPublicKeyAsync(Guid keyId)

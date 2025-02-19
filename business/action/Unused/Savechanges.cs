@@ -6,7 +6,7 @@ using TCX.Configuration;
 using System.IO;
 namespace WebAPI
 {
-    class savechanges
+    class Savechanges
     {
         public static IEnumerable<string> AllAgentQueues(Extension agentdn)
         {

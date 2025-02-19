@@ -11,7 +11,7 @@ using System.Net;
 
 namespace WebAPI
 {
-    public class dropcall
+    public class Dropcall
     {
         public static string dropcallid(string args1)
         {       

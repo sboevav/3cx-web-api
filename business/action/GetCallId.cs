@@ -9,11 +9,11 @@ using System.Reflection;
 using System.Linq;
 using System.Net;
 
-namespace WebAPI
+namespace WebAPI.business
 {
-    public class getcallid
+    public class GetCallId
     {
-        public static string showcallid(string args1)
+        public static string ShowCallId(string args1)
         {       
             string mod2 = "0";
             string CallID = "0";

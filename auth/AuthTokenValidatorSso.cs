@@ -1,19 +1,22 @@
 using System;
+using System.Collections.Concurrent;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
+using WebAPI.auth;
 
 namespace WebAPI
 {
     public class AuthTokenValidatorSso
     {
-        private readonly SsoClient ssoClient;
+        private readonly SsoClient _ssoClient;
+        private readonly ConcurrentDictionary<Guid, string> _publicKeys = new ConcurrentDictionary<Guid, string>();
 
-        public AuthTokenValidatorSso(String ssoUrl)
+        public AuthTokenValidatorSso(SsoClient ssoClient)
         {
-            ssoClient = new SsoClient(ssoUrl);
+            _ssoClient = ssoClient;
         }
 
         public async Task<bool> Validate(string token)
@@ -24,10 +27,16 @@ namespace WebAPI
             if (string.IsNullOrEmpty(keyIdStr)) return false;
             if (!Guid.TryParse(keyIdStr, out var keyId)) return false;
 
-            var publicKey = await GetKey(keyId);
-            if (publicKey == null) return false;
 
-            var securityKey = new RsaSecurityKey(publicKey.Value);
+            if (!_publicKeys.TryGetValue(keyId, out var publicKey))
+            {
+                publicKey = await GetKey(keyId);
+                if (publicKey == null) return false;
+                _publicKeys.TryAdd(keyId, publicKey);
+            }
+
+            RSAParameters? rsaParameters = GetRsaParameters(publicKey);
+            var securityKey = new RsaSecurityKey(rsaParameters.Value);
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
@@ -61,14 +70,25 @@ namespace WebAPI
             return jwtToken;
         }
 
-        private async Task<RSAParameters?> GetKey(Guid keyId)
+        private async Task<string> GetKey(Guid keyId)
         {
             try
             {
-                var publicKeyResult = await ssoClient.GetPublicKeyAsync(keyId);
-                var publicKeyData = publicKeyResult.result.PublicKey;
+                var publicKeyResult = await _ssoClient.GetPublicKeyAsync(keyId);
+                return publicKeyResult.result.PublicKey;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+            return null;
+        }
 
-                using (var rsaProvider = KeyConverter.X509ToPublicKey(publicKeyData))
+        private RSAParameters? GetRsaParameters(string publicKey)
+        {
+            try
+            {
+                using (var rsaProvider = KeyConverter.X509ToPublicKey(publicKey))
                 {
                     var rsaParameters = rsaProvider.ExportParameters(false);
                     return rsaParameters;
