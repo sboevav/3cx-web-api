@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using WebAPI.auth;
 
@@ -11,29 +12,45 @@ namespace WebAPI
 {
     public class AuthTokenValidatorSso
     {
+        private readonly ILogger<AuthTokenValidatorSso> _logger;
         private readonly SsoClient _ssoClient;
         private readonly ConcurrentDictionary<Guid, string> _publicKeys = new ConcurrentDictionary<Guid, string>();
 
-        public AuthTokenValidatorSso(SsoClient ssoClient)
+        public AuthTokenValidatorSso(ILogger<AuthTokenValidatorSso> logger, SsoClient ssoClient)
         {
+            _logger = logger;
             _ssoClient = ssoClient;
         }
 
         public async Task<bool> Validate(string token)
         {
+            _logger.LogDebug("Token decoding...");
             var jwt = DecodeToken(token);
             var keyIdStr = jwt.Header.Kid;
 
-            if (string.IsNullOrEmpty(keyIdStr)) return false;
+            if (string.IsNullOrEmpty(keyIdStr)) 
+            {
+                _logger.LogError("jwt.Header.Kid is empty");
+                return false;
+            }
             if (!Guid.TryParse(keyIdStr, out var keyId)) return false;
 
 
             if (!_publicKeys.TryGetValue(keyId, out var publicKey))
             {
+                _logger.LogDebug("Receiving public key from SSO...");
+                
                 publicKey = await GetKey(keyId);
                 if (publicKey == null) return false;
                 _publicKeys.TryAdd(keyId, publicKey);
+                
+                _logger.LogDebug("Public key received from SSO");
+            } 
+            else
+            {
+                _logger.LogDebug("Public key received from cache");
             }
+
 
             RSAParameters? rsaParameters = GetRsaParameters(publicKey);
             var securityKey = new RsaSecurityKey(rsaParameters.Value);
@@ -56,10 +73,11 @@ namespace WebAPI
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Token validation failed: " + ex.Message);
+                _logger.LogError("Token validation failed: " + ex.Message);
                 return false;
             }
     
+            _logger.LogDebug("The token successfully validated");
             return true;
         }
 
@@ -79,7 +97,7 @@ namespace WebAPI
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred: {ex.Message}");
+                _logger.LogError($"An error occurred: {ex.Message}");
             }
             return null;
         }
@@ -96,7 +114,7 @@ namespace WebAPI
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred: {ex.Message}");
+                _logger.LogError($"An error occurred: {ex.Message}");
             }
             return null;
         }
