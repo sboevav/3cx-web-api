@@ -48,13 +48,7 @@ public class Startup
         var configurationService = new ConfigurationService(configurationFilePath);
         services.AddSingleton(configurationService);
         services.AddSingleton<PbxService>();
-        
-        services.AddLogging(builder =>
-        {
-            builder.AddConsole();
-            builder.AddDebug();
-        });
-        
+
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
