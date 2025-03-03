@@ -8,6 +8,7 @@ public class AppSettings
     public string SsoUrl { get; set; } = string.Empty;
     public string EndpointSearchContact { get; set; } = string.Empty;
     public string EndpointReportCall { get; set; } = string.Empty;
+    public bool OnlyUsersContacts { get; set; } = true;
     public List<Company> Companies { get; set; } = new List<Company>();
 }
 

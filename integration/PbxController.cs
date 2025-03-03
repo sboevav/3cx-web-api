@@ -29,13 +29,14 @@ namespace WebAPI.integration
             [FromQuery] long aspId,
             [FromQuery] string number,
             [FromQuery] string email,
-            [FromQuery] string callDirection)
+            [FromQuery] string callDirection,
+            [FromQuery] string agent)
         {
             List<PbxContactDto> result;
 
             if (!string.IsNullOrEmpty(number))
             {
-                result = await RestCommandExecutor.Execute(new PbxSearchContactsByPhoneCommand(_appSettings, _httpClient, GetUniqueUrls(), number));
+                result = await RestCommandExecutor.Execute(new PbxSearchContactsByPhoneCommand(_appSettings, _httpClient, GetUniqueUrls(), number, agent));
             }
             else if (!string.IsNullOrEmpty(email))
             {

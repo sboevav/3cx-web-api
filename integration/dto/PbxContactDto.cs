@@ -1,3 +1,5 @@
+using System;
+
 namespace WebAPI.integration.dto;
 
 public class PbxContactDto
@@ -18,4 +20,5 @@ public class PbxContactInfoDto
     public string MobilePhone2 { get; set; }
     public string Url { get; set; }
     public string CustomValue { get; set; }
+    public bool IsAvailableForUser { get; set; }
 }
